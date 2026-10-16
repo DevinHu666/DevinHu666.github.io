@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { url } from "../lib/url";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const { title, summary, status, course, tags } = project.data;
+const published = status === "published";
+const label = { published: "Live demo", "in-progress": "Write-up coming", planned: "Planned" }[status];
+const Tag = published ? "a" : "div";
+---
+
+<Tag class:list={["card", status]} href={published ? url(`projects/${project.id}/`) : undefined}>
+  <div class="top">
+    {course && <span class="eyebrow">{course}</span>}
+    <span class:list={["pill", status]}>{label}</span>
+  </div>
+  <h3>{title}</h3>
+  <p class="muted">{summary}</p>
+  {tags.length > 0 && (
+    <ul class="tags">
+      {tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  )}
+  {published && <span class="more" aria-hidden="true">Open project →</span>}
+</Tag>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 18px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+  a.card {
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  a.card:hover {
+    transform: translateY(-2px);
+    border-color: var(--muted);
+  }
+  .card.planned {
+    background: transparent;
+    border-style: dashed;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  h3 {
+    margin: 4px 0 0;
+    font-size: 1.08rem;
+  }
+  p {
+    margin: 0;
+    font-size: 0.93rem;
+    flex: 1;
+  }
+  .more {
+    margin-top: 6px;
+    font-weight: 650;
+    font-size: 0.9rem;
+    color: var(--highlight);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a.card { transition: none; }
+    a.card:hover { transform: none; }
+  }
+</style>

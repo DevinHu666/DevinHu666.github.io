@@ -1,0 +1,92 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import RobotReplay from "../../components/RobotReplay.astro";
+import { projects, type Project } from "../../lib/projects";
+import { url } from "../../lib/url";
+
+export async function getStaticPaths() {
+  return (await projects())
+    .filter((project) => project.data.status === "published")
+    .map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props as { project: Project };
+const { title, summary, course, tags, highlights, demo } = project.data;
+const { Content } = await render(project);
+---
+
+<Base title={title} description={summary}>
+  <article class="wrap page">
+    <a class="back muted" href={url("projects/")}>← Projects</a>
+    {course && <p class="eyebrow">{course}</p>}
+    <h1>{title}</h1>
+    <p class="lead">{summary}</p>
+    {tags.length > 0 && <ul class="tags">{tags.map((tag) => <li>{tag}</li>)}</ul>}
+
+    {demo === "p3-rickroll" && (
+      <div class="demo">
+        <RobotReplay
+          model="models/rpo.glb"
+          recording="data/p3-rickroll.json"
+          label="The RPO humanoid dancing the Rickroll choreography, replayed from my forward-kinematics runtime"
+          recordable
+        />
+        <p class="muted caption">
+          Drag to orbit, scroll to zoom. Every pose was published by my runtime on <code>/xform_world</code>; the page
+          only blends neighbouring frames. RPO robot description © Roboparty,{" "}
+          <a href="https://github.com/Roboparty/roboto_origin">CERN-OHL-W-2.0</a> (meshes simplified for the web).
+        </p>
+      </div>
+    )}
+
+    {highlights.length > 0 && (
+      <ul class="highlights">
+        {highlights.map((item) => <li>{item}</li>)}
+      </ul>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page {
+    padding-top: 28px;
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: 18px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .lead {
+    font-size: 1.15rem;
+    max-width: 46rem;
+  }
+  .demo {
+    margin: 28px 0 8px;
+  }
+  .caption {
+    font-size: 0.85rem;
+    margin-top: 10px;
+    max-width: 46rem;
+  }
+  .highlights {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 12px;
+  }
+  .highlights li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+</style>

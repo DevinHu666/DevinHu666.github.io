@@ -1,0 +1,96 @@
+---
+import Base from "../layouts/Base.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import RobotReplay from "../components/RobotReplay.astro";
+import { site } from "../site";
+import { url } from "../lib/url";
+import { projects } from "../lib/projects";
+
+const all = await projects();
+const shown = all.filter((p) => p.data.status !== "planned").sort((a, b) => {
+  const rank = (p: typeof a) => (p.data.status === "published" ? 0 : 1);
+  return rank(a) - rank(b) || a.data.order - b.data.order;
+});
+const { links } = site;
+---
+
+<Base>
+  <section class="wrap hero">
+    <div class="intro">
+      <p class="eyebrow">Robotics · Software</p>
+      <h1>{site.name}</h1>
+      <p class="tagline">{site.tagline}</p>
+      <p class="muted">{site.intro}</p>
+      <div class="actions">
+        <a class="button primary" href={url("projects/")}>See projects</a>
+        {links.cv && <a class="button" href={url(links.cv)}>CV</a>}
+        {links.github && <a class="button" href={links.github}>GitHub</a>}
+        {links.linkedin && <a class="button" href={links.linkedin}>LinkedIn</a>}
+        {links.email && <a class="button" href={`mailto:${links.email}`}>Email</a>}
+      </div>
+    </div>
+    <div class="visual">
+      <RobotReplay
+        model="models/rpo.glb"
+        recording="data/p3-rickroll.json"
+        label="An RPO humanoid robot dancing, replayed from my forward-kinematics runtime"
+        compact
+      />
+      <p class="caption muted">
+        Live 3D, recorded from my FK runtime. <a href={url("projects/p3-forward-kinematics/")}>How it works →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>Projects</h2>
+    <div class="grid">
+      {shown.map((project) => <ProjectCard project={project} />)}
+    </div>
+    <p class="muted more"><a href={url("projects/")}>All projects and what's next →</a></p>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 28px;
+    align-items: center;
+    padding-top: 40px;
+  }
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      padding-top: 64px;
+    }
+  }
+  .tagline {
+    font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+    line-height: 1.4;
+    margin-bottom: 0.8em;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .visual {
+    max-width: 440px;
+    width: 100%;
+    justify-self: center;
+  }
+  .caption {
+    font-size: 0.85rem;
+    margin: 8px 2px 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+  }
+  .more {
+    margin-top: 18px;
+  }
+</style>

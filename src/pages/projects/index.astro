@@ -1,0 +1,41 @@
+---
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { projects } from "../../lib/projects";
+
+const all = await projects();
+const sections = [
+  { status: "published", title: "With live demos" },
+  { status: "in-progress", title: "Done; write-ups coming" },
+  { status: "planned", title: "Next" },
+] as const;
+---
+
+<Base title="Projects" description="Robotics projects with interactive demos.">
+  <section class="wrap page">
+    <h1>Projects</h1>
+    <p class="muted lead">
+      Each project page leads with something you can interact with, then explains the problem, what I built, and how I
+      checked it.
+    </p>
+    {sections.map(({ status, title }) => {
+      const items = all.filter((p) => p.data.status === status);
+      return items.length > 0 && (
+        <>
+          <h2>{title}</h2>
+          <div class="grid">{items.map((project) => <ProjectCard project={project} />)}</div>
+        </>
+      );
+    })}
+  </section>
+</Base>
+
+<style>
+  .page { padding-top: 40px; }
+  .lead { max-width: 40rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+  }
+</style>

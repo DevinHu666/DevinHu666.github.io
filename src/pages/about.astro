@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../site";
+import { url } from "../lib/url";
+const { links } = site;
+---
+
+<Base title="About">
+  <section class="wrap page prose">
+    <h1>About</h1>
+    <p>{site.intro}</p>
+
+    <h2>How I build</h2>
+    <p class="todo">
+      Draft for you to rewrite in your own words before publishing. Course policy requires disclosing AI tool use, and
+      this section should say exactly what you did. Keep only what you can explain in an interview.
+    </p>
+    <p>
+      I write a spec and the tests first, and I direct AI coding agents through the implementation. I review every change,
+      and nothing ships until it passes black-box tests that drive the system the way the course autograder does, over its
+      TCP/JSON protocol. The course then checks that I understand the code: I repair deliberately broken copies of my own
+      projects without AI tools.
+    </p>
+
+    <h2>Contact</h2>
+    <ul>
+      {links.email && <li><a href={`mailto:${links.email}`}>{links.email}</a></li>}
+      {links.github && <li><a href={links.github}>GitHub</a></li>}
+      {links.linkedin && <li><a href={links.linkedin}>LinkedIn</a></li>}
+      {links.cv && <li><a href={url(links.cv)}>CV (PDF)</a></li>}
+      {!links.email && !links.github && !links.linkedin && !links.cv && (
+        <li class="muted">TODO: add links in <code>src/site.ts</code>.</li>
+      )}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .page { padding-top: 40px; }
+</style>

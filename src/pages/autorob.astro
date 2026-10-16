@@ -1,0 +1,60 @@
+---
+import Base from "../layouts/Base.astro";
+import { projects } from "../lib/projects";
+import { url } from "../lib/url";
+
+// The course asks for a portfolio page per project; this page is the index the
+// course staff can grade from, while the rest of the site is for everyone else.
+const course = (await projects())
+  .filter((p) => p.data.courseProject !== undefined)
+  .sort((a, b) => a.data.courseProject! - b.data.courseProject!);
+const label = { published: "Page + demo", "in-progress": "Done; page coming", planned: "Not started" };
+---
+
+<Base title="AutoRob portfolio" description="My ROB 380 (AutoRob) project portfolio, University of Michigan.">
+  <section class="wrap page">
+    <p class="eyebrow">University of Michigan · ROB 380 · Fall 2026</p>
+    <h1>AutoRob portfolio</h1>
+    <div class="prose">
+      <p>
+        AutoRob builds a robot software stack from the ground up: a ROS-like publish/subscribe runtime first, then path
+        planning, dynamics and control, forward and inverse kinematics, and motion planning on top of it. This semester
+        is the course's "Agentic Edition": AI coding tools are allowed for the projects, and understanding is checked by
+        repairing mutated versions of my own code without them, plus quizzes and exams.
+      </p>
+    </div>
+    <div class="table">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Project</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {course.map((p) => (
+            <tr>
+              <td class="num">{p.data.courseProject}</td>
+              <td>
+                {p.data.status === "published" ? (
+                  <a href={url(`projects/${p.id}/`)}><strong>{p.data.title}</strong></a>
+                ) : (
+                  <strong>{p.data.title}</strong>
+                )}
+                <div class="muted small">{p.data.summary}</div>
+              </td>
+              <td><span class:list={["pill", p.data.status]}>{label[p.data.status]}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page { padding-top: 40px; }
+  .table { overflow-x: auto; margin-top: 24px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; }
+  th, td { text-align: left; padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .num { font-family: var(--mono); color: var(--muted); width: 2.5em; }
+  .small { font-size: 0.9rem; margin-top: 2px; }
+</style>
