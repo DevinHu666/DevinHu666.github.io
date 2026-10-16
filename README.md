@@ -63,8 +63,9 @@ The 3D replay is real runtime output, not an animation authored for the page:
 1. Create a GitHub repository and push this folder as its root. A repository named
    `<user>.github.io` is served at `https://<user>.github.io/`; any other name at
    `https://<user>.github.io/<repo>/`.
-2. In the repository, open Settings → Pages → Source and choose "GitHub Actions".
-   `.github/workflows/deploy.yml` builds and publishes on every push to `main`, with the right
-   base path.
+2. When you're ready to publish, make the repository public, then open Settings → Pages →
+   Source and choose "GitHub Actions". `.github/workflows/deploy.yml` builds on every push
+   to `main`, and publishes with the right base path only while the repository is public.
+   While it's private, each push is just a build check.
 3. Optional: a custom domain (about $10–15 a year). Set it in Settings → Pages, then set
    `SITE_URL` to it and `BASE_PATH` to `/` in the workflow.

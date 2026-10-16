@@ -1,5 +1,5 @@
-# Builds the site and publishes it with GitHub Pages.
-# In the repository: Settings → Pages → Source: "GitHub Actions".
+# Builds the site on every push; publishes it with GitHub Pages once the
+# repository is public. In the repository: Settings → Pages → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
 
 on:
@@ -36,8 +36,11 @@ jobs:
         with:
           path: dist
 
+  # Pages can't serve a private repository on a free account, so until the
+  # repository is made public every push is only a build check.
   deploy:
     needs: build
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
