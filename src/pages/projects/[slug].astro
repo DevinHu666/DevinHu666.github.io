@@ -2,6 +2,8 @@
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import RobotReplay from "../../components/RobotReplay.astro";
+import AstarGrid from "../../components/AstarGrid.astro";
+import PendularmReplay from "../../components/PendularmReplay.astro";
 import { projects, type Project } from "../../lib/projects";
 import { url } from "../../lib/url";
 
@@ -12,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props as { project: Project };
-const { title, summary, course, tags, highlights, demo } = project.data;
+const { title, summary, course, tags, highlights, demo, video, videoCaption } = project.data;
 const { Content } = await render(project);
 ---
 
@@ -23,6 +25,37 @@ const { Content } = await render(project);
     <h1>{title}</h1>
     <p class="lead">{summary}</p>
     {tags.length > 0 && <ul class="tags">{tags.map((tag) => <li>{tag}</li>)}</ul>}
+
+    {video && (
+      <figure class="demo">
+        <video class="video" src={url(video)} controls muted playsinline preload="metadata"></video>
+        {videoCaption && <figcaption class="muted caption">{videoCaption}</figcaption>}
+      </figure>
+    )}
+
+    {demo === "p1-astar" && (
+      <div class="demo">
+        <AstarGrid recording="data/p1-astar.json" />
+        <p class="muted caption">
+          Each path is the answer my runtime gave to <code>/plan_path</code> over TCP, recorded as an ordinary client and
+          checked against the <code>/path</code> it published. Green is the start, red the goal.
+        </p>
+      </div>
+    )}
+
+    {demo === "p2-pendularm" && (
+      <div class="demo">
+        <PendularmReplay
+          recording="data/p2-pendularm.json"
+          label="A three-link arm falls under gravity, then reaches five targets in turn under PID control, replayed from my Project 2 runtime"
+        />
+        <p class="muted caption">
+          Recorded from my runtime's <code>/joint_states</code> at simulation time. The page turns those joint angles into
+          link positions and draws nothing else of its own. Dashed: the setpoint my IK sent. The strip below plots each
+          joint angle against its setpoint; click it to jump.
+        </p>
+      </div>
+    )}
 
     {demo === "p3-rickroll" && (
       <div class="demo">
@@ -68,6 +101,14 @@ const { Content } = await render(project);
   }
   .demo {
     margin: 28px 0 8px;
+  }
+  .video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--stage);
   }
   .caption {
     font-size: 0.85rem;

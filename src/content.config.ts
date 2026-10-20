@@ -17,7 +17,9 @@ const projects = defineCollection({
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     date: z.string().optional(), // "2026-10"
-    demo: z.enum(["p3-rickroll"]).optional(), // interactive block shown above the write-up
+    video: z.string().optional(), // a video file in public/, shown above the demo
+    videoCaption: z.string().optional(),
+    demo: z.enum(["p1-astar", "p2-pendularm", "p3-rickroll"]).optional(), // interactive block shown above the write-up
     highlights: z.array(z.string()).default([]), // short, numeric where possible
   }),
 });

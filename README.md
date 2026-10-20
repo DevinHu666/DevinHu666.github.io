@@ -16,10 +16,10 @@ doesn't sync `node_modules/`. GitHub is the backup.
 ## Before publishing
 
 - [ ] `src/site.ts`: your tagline, intro, and links (GitHub, LinkedIn, CV, email if you want it public).
-- [ ] `src/pages/about.astro` and the end of `src/content/projects/p3-forward-kinematics.md`:
+- [ ] `src/pages/about.astro` and the end of each project write-up (P1, P2, P3):
       replace the dashed **TODO** boxes with your own AI-use statement. Course policy requires
       disclosing AI tools, and the text should be something you can defend in an interview.
-- [ ] Read the P3 write-up and rewrite anything that doesn't sound like you.
+- [ ] Read the P1, P2 and P3 write-ups and rewrite anything that doesn't sound like you.
 - [ ] Ask course staff whether your code may be public. Until then, keep the code repositories private.
       The site itself contains no course solution code, only recordings and write-ups.
 
@@ -34,8 +34,24 @@ One Markdown file in `src/content/projects/`. The schema is in `src/content.conf
 | `planned` | a dashed roadmap card, no page |
 
 Set `courseProject` to list it on the AutoRob page. Set `demo` to embed an interactive block
-above the write-up (only `p3-rickroll` exists so far; add new ones in
-`src/pages/projects/[slug].astro`).
+above the write-up (`p1-astar`, `p2-pendularm` and `p3-rickroll` exist; add new ones to the enum in
+`src/content.config.ts` and render them in `src/pages/projects/[slug].astro`).
+
+## The Project 1 and 2 demos
+
+Both replay recordings of the real runtimes, made by scripts that start a runtime and talk to it
+as an ordinary TCP client (`scripts/rosbridge_client.py`, port 9095 must be free). They never
+write into the course folders.
+
+- `public/data/p1-astar.json`: four maps and the runtime's `/plan_path` answers. The first map
+  is the graded `maps/student_map.json`; the others are generated from fixed seeds.
+  Re-record with `PROJECT1_DIR=<path to project1> npm run assets:record-p1`
+  (`scripts/record_p1.py`). `src/components/AstarGrid.astro` draws them as SVG.
+- `public/data/p2-pendularm.json`: 36 s of `/joint_states` from a 3-link arm falling with PID
+  off, then reaching five `/ik_action` goals. Re-record with
+  `PROJECT2_DIR=<path to project2-python> npm run assets:record-p2` (`scripts/record_p2.py`).
+  `src/components/PendularmReplay.astro` draws links from the joint angles (forward kinematics
+  only) and plots each angle against its setpoint.
 
 ## The Project 3 demo
 

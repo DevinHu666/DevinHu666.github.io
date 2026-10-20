@@ -11,15 +11,16 @@ const { links } = site;
     <p>{site.intro}</p>
 
     <h2>How I build</h2>
-    <p class="todo">
-      Draft for you to rewrite in your own words before publishing. Course policy requires disclosing AI tool use, and
-      this section should say exactly what you did. Keep only what you can explain in an interview.
+    <p>
+      I build with AI coding agents, mainly Anthropic's Claude Code. Each course project follows the same loop: read the
+      specification, write a plan, implement it in small steps, audit the result and test it, with the plan, decisions and
+      test results kept in the repository. Nothing counts as done until it passes black-box tests that drive the system the
+      way the course autograder does, over its TCP/JSON protocol. The course then checks that I understand the code: I
+      repair deliberately broken copies of my own projects without AI tools.
     </p>
     <p>
-      I write a spec and the tests first, and I direct AI coding agents through the implementation. I review every change,
-      and nothing ships until it passes black-box tests that drive the system the way the course autograder does, over its
-      TCP/JSON protocol. The course then checks that I understand the code: I repair deliberately broken copies of my own
-      projects without AI tools.
+      This website, its demos and the first drafts of its write-ups were also made with Claude Code. Each project page says
+      how AI was used on that project.
     </p>
 
     <h2>Contact</h2>

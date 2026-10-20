@@ -12,7 +12,9 @@ project, the P3 demo pipeline, and deploying.
 - `npm run build`: must pass before any commit. Then check pages at desktop and 375 px widths,
   in light and dark mode.
 - `PROJECT3_DIR=… npm run assets:robot` / `assets:record`: regenerate the P3 model or recording.
-  These need the user's local course folder (path in `CLAUDE.local.md` when present). Cloud
+  `PROJECT1_DIR=… npm run assets:record-p1` and `PROJECT2_DIR=… npm run assets:record-p2` do
+  the same for P1 and P2. These need the user's local course folder (paths in `CLAUDE.local.md`
+  when present). Cloud
   sessions can't run them; the generated files in `public/` are committed.
 
 ## Rules
@@ -23,7 +25,7 @@ project, the P3 demo pipeline, and deploying.
   still being asked of course staff, so never copy course solution source into this repo.
   Recordings, models and write-ups only.
 - **Demos show real output.** Every interactive visual replays data recorded from the user's
-  own runtimes (see `scripts/record_p3.py`). Don't re-implement course algorithms in the
+  own runtimes (see `scripts/record_p*.py`). Don't re-implement course algorithms in the
   browser to fake a demo.
 - **Credit third-party assets** next to where they appear: the RPO robot is CERN-OHL-W-2.0 by
   Roboparty (license in `public/models/`); Fetch would be CC BY-NC-SA 4.0. Don't publish

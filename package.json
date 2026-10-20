@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "assets:robot": "node scripts/build-robot-glb.mjs",
-    "assets:record": "python3 scripts/record_p3.py"
+    "assets:record": "python3 scripts/record_p3.py",
+    "assets:record-p1": "python3 scripts/record_p1.py",
+    "assets:record-p2": "python3 scripts/record_p2.py"
   },
   "dependencies": {
     "astro": "^7.4.0",

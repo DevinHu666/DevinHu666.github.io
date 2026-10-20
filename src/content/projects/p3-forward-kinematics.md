@@ -8,6 +8,8 @@ courseProject: 3
 tags: ["forward kinematics", "URDF", "quaternions", "pub/sub", "three.js", "Python"]
 featured: true
 date: "2026-10"
+video: "videos/p3-rickroll.mp4"
+videoCaption: "One loop of the choreography, recorded from the replay below (no sound). RPO robot description © Roboparty, CERN-OHL-W-2.0."
 demo: "p3-rickroll"
 highlights:
   - "Full marks on the checkpoint autograder"
@@ -95,4 +97,4 @@ The replay above is not an animation I authored. It records one loop of `/xform_
 - RPO robot description © Roboparty, [CERN-OHL-W-2.0](https://github.com/Roboparty/roboto_origin). The meshes are simplified for the web.
 - Specification, starter kit and autograder: AutoRob (ROB 380), University of Michigan.
 
-<p class="todo">TODO before publishing: state in your own words how you used AI tools on this project. Course policy requires the disclosure, and the course permits the use itself.</p>
+**AI use.** I built this project with Claude Code (Anthropic's coding agent, using Claude Opus and Sonnet models), in the same plan → implement → audit → test workflow as Projects 1 and 2: Claude Code wrote code and tests under my direction. The 3D replay on this page and the script that records it were also written with Claude Code. This write-up and statement were drafted with Claude Code from my project notes, and reviewed by me.

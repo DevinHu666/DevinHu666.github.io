@@ -1,0 +1,212 @@
+---
+// Draws /plan_path answers recorded from my Project 1 runtime (scripts/record_p1.py).
+// The page plans nothing: each path is the list of cells the runtime returned.
+import { url } from "../lib/url";
+
+interface Props {
+  recording: string; // JSON from scripts/record_p1.py
+}
+const { recording } = Astro.props;
+---
+
+<figure class="astar" data-recording={url(recording)}>
+  <div class="tabs" role="group" aria-label="Map"></div>
+  <div class="board">
+    <svg role="img" aria-label="Occupancy grid with the planned path"></svg>
+    <div class="status" aria-live="polite">Loading the maps…</div>
+  </div>
+  <figcaption>
+    <span class="result"></span>
+    <span class="note muted"></span>
+  </figcaption>
+</figure>
+
+<script>
+  type GridMap = {
+    name: string;
+    note: string;
+    width: number;
+    height: number;
+    cells: string;
+    start: [number, number];
+    goal: [number, number];
+    result: boolean;
+    path: [number, number][];
+    ms: number;
+  };
+
+  const SVG = "http://www.w3.org/2000/svg";
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function el(name: string, attrs: Record<string, string | number>) {
+    const node = document.createElementNS(SVG, name);
+    for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, String(value));
+    return node;
+  }
+
+  function draw(figure: HTMLElement, map: GridMap) {
+    const svg = figure.querySelector("svg")!;
+    const { width: w, height: h } = map;
+    // Row 0 is the bottom of the map (y grows up), so flip rows for SVG.
+    const top = (y: number) => h - 1 - y;
+    svg.replaceChildren();
+    svg.setAttribute("viewBox", `-0.5 -0.5 ${w + 1} ${h + 1}`);
+    svg.append(el("rect", { class: "free", x: 0, y: 0, width: w, height: h }));
+
+    let blocked = "";
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) if (map.cells[y * w + x] === "1") blocked += `M${x} ${top(y)}h1v1h-1z`;
+    svg.append(el("path", { class: "blocked", d: blocked }));
+
+    if (w <= 24) {
+      let lines = "";
+      for (let x = 1; x < w; x++) lines += `M${x} 0V${h}`;
+      for (let y = 1; y < h; y++) lines += `M0 ${y}H${w}`;
+      svg.append(el("path", { class: "lines", d: lines }));
+    }
+    svg.append(el("rect", { class: "edge", x: 0, y: 0, width: w, height: h }));
+
+    if (map.path.length > 1) {
+      const points = map.path.map(([x, y]) => `${x + 0.5},${top(y) + 0.5}`).join(" ");
+      const line = el("polyline", { class: "route", points, pathLength: 1 });
+      line.style.strokeWidth = String(Math.max(0.28, Math.min(w, h) / 70));
+      if (!reducedMotion) {
+        // The resting style is the finished line, so it shows even if the animation never runs.
+        line.style.strokeDasharray = "1";
+        line.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], {
+          duration: 600 + 12 * map.path.length,
+          easing: "ease-in-out",
+        });
+      }
+      svg.append(line);
+    }
+    const radius = Math.max(0.36, Math.min(w, h) / 45);
+    for (const [kind, [x, y]] of [["start", map.start], ["goal", map.goal]] as const)
+      svg.append(el("circle", { class: kind, cx: x + 0.5, cy: top(y) + 0.5, r: radius }));
+
+    const moves = map.path.length - 1;
+    figure.querySelector(".result")!.textContent = map.result
+      ? `${moves} moves · answered in ${map.ms} ms over TCP`
+      : `result: false, no path · answered in ${map.ms} ms`;
+    figure.querySelector(".result")!.classList.toggle("fail", !map.result);
+    figure.querySelector(".note")!.textContent = map.note;
+    svg.setAttribute(
+      "aria-label",
+      `${map.name}: ${w} by ${h} grid. ${map.result ? `Planned path of ${moves} moves.` : "No path exists."}`,
+    );
+  }
+
+  for (const figure of document.querySelectorAll<HTMLElement>(".astar")) {
+    fetch(figure.dataset.recording!)
+      .then((response) => response.json())
+      .then(({ maps }: { maps: GridMap[] }) => {
+        figure.querySelector(".status")!.remove();
+        const tabs = figure.querySelector(".tabs")!;
+        const buttons = maps.map((map, i) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = map.name;
+          button.addEventListener("click", () => select(i));
+          tabs.append(button);
+          return button;
+        });
+        const select = (i: number) => {
+          buttons.forEach((b, j) => b.setAttribute("aria-pressed", String(i === j)));
+          draw(figure, maps[i]);
+        };
+        select(0);
+      })
+      .catch(() => {
+        figure.querySelector(".status")!.textContent = "Couldn't load the recording.";
+      });
+  }
+</script>
+
+<style>
+  .astar {
+    margin: 0;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tabs :global(button) {
+    font: 600 0.82rem/1 var(--font);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-height: 34px;
+    cursor: pointer;
+  }
+  .tabs :global(button[aria-pressed="true"]) {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .board {
+    position: relative;
+    min-height: 120px;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    max-height: 62vh;
+  }
+  .status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  svg :global(.free) {
+    fill: var(--bg);
+  }
+  svg :global(.blocked) {
+    fill: var(--muted);
+  }
+  svg :global(.lines) {
+    stroke: var(--line);
+    stroke-width: 0.04;
+    fill: none;
+  }
+  svg :global(.edge) {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 0.08;
+  }
+  svg :global(.route) {
+    fill: none;
+    stroke: var(--highlight);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  svg :global(.start) {
+    fill: var(--ok);
+  }
+  svg :global(.goal) {
+    fill: #d1495b;
+  }
+  figcaption {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+    font-size: 0.88rem;
+  }
+  .result {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+  }
+  .result:global(.fail) {
+    color: var(--warn);
+  }
+</style>
