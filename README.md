@@ -2,7 +2,8 @@
 
 A personal robotics portfolio for grad-school applications and job hunting. It also serves as
 the AutoRob (ROB 380) course portfolio. Static [Astro](https://astro.build) site with three.js
-demos, hosted on GitHub Pages.
+demos, live at **https://devinhu666.github.io/**, served by GitHub Pages from the public
+repository [DevinHu666/DevinHu666.github.io](https://github.com/DevinHu666/DevinHu666.github.io).
 
 ```bash
 npm install          # once
@@ -13,15 +14,17 @@ npm run build        # static site in dist/
 Keep this folder outside iCloud Drive (it lives in `~/portfolio-site`), so the iCloud client
 doesn't sync `node_modules/`. GitHub is the backup.
 
-## Before publishing
+## Still to do
 
-- [ ] `src/site.ts`: your tagline, intro, and links (GitHub, LinkedIn, CV, email if you want it public).
-- [ ] `src/pages/about.astro` and the end of each project write-up (P1, P2, P3):
-      replace the dashed **TODO** boxes with your own AI-use statement. Course policy requires
-      disclosing AI tools, and the text should be something you can defend in an interview.
-- [ ] Read the P1, P2 and P3 write-ups and rewrite anything that doesn't sound like you.
-- [ ] Ask course staff whether your code may be public. Until then, keep the code repositories private.
-      The site itself contains no course solution code, only recordings and write-ups.
+The site went public on 2026-10-20 for ROB 380 Project 3 grading. Open items:
+
+- [ ] `src/site.ts`: the `[TBD]` and `[Conclude again…]` notes show on the live site, and the
+      GitHub, LinkedIn and CV links are empty.
+- [ ] Confirm the P3 AI-use statement. P1 and P2's are backed by their commit history; P3's
+      runtime isn't tracked in git, so its statement rests on the same workflow.
+- [ ] Course staff still have to say whether course code may be public. Keep the course code
+      repositories private until then. This repository contains no course solution code, only
+      recordings, write-ups and the scripts that record them.
 
 ## Adding a project
 
@@ -72,16 +75,19 @@ The 3D replay is real runtime output, not an animation authored for the page:
 - `src/components/RobotReplay.astro`: puts each link group at the recorded pose, blending
   neighbouring frames (lerp/slerp). It offers orbit, scrub, speed, camera presets and link
   frames, plus **Save video**, which records exactly one loop as WebM with `MediaRecorder`. That
-  file can go straight to the course video deliverable (add music while editing).
+  file can go straight to the course video deliverable (add music while editing). The P3 page
+  shows one such loop, converted to a silent H.264 file, `public/videos/p3-rickroll.mp4`
+  (set by `video` in the project's front matter).
 
 ## Deploying
 
-1. Create a GitHub repository and push this folder as its root. A repository named
-   `<user>.github.io` is served at `https://<user>.github.io/`; any other name at
-   `https://<user>.github.io/<repo>/`.
-2. When you're ready to publish, make the repository public, then open Settings → Pages →
-   Source and choose "GitHub Actions". `.github/workflows/deploy.yml` builds on every push
-   to `main`, and publishes with the right base path only while the repository is public.
-   While it's private, each push is just a build check.
-3. Optional: a custom domain (about $10–15 a year). Set it in Settings → Pages, then set
-   `SITE_URL` to it and `BASE_PATH` to `/` in the workflow.
+Every push to `main` builds the site and publishes it, so whatever lands on `main` is live and
+visible to course staff. Run `npm run build` and check the pages first.
+
+- The repository is named `DevinHu666.github.io`, so it is served from `/`
+  (`.github/workflows/deploy.yml` picks the base path from the repository name).
+- Settings → Pages → Source is "GitHub Actions". GitHub had turned Pages on in its legacy
+  "deploy from branch" mode when the repository was renamed; that mode doesn't build Astro.
+- If the repository is ever made private again, pushes go back to being build checks only.
+- Optional: a custom domain (about $10–15 a year). Set it in Settings → Pages, then set
+  `SITE_URL` to it and `BASE_PATH` to `/` in the workflow.

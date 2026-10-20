@@ -32,5 +32,7 @@ project, the P3 demo pipeline, and deploying.
   copyrighted music in videos on the public site.
 - **Keep it small.** No CSS framework, no client-side framework; three.js only where a demo
   needs it.
-- The repository is private for now. GitHub Pages on a free account needs a public
-  repository, so publishing is the user's decision, made when the TODOs are filled in.
+- **The site is public** at https://devinhu666.github.io/ (repository
+  `DevinHu666/DevinHu666.github.io`), and course staff grade it there. Every push to `main`
+  deploys, so commit and push only what the user has approved, after `npm run build` and the
+  page checks above.
