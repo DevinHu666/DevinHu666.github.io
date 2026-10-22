@@ -2,6 +2,7 @@
 title: "Forward kinematics, and a humanoid that dances"
 summary: "A ROS-style node graph that turns any URDF plus joint angles into every link's pose. I pushed it past the assignment until an open-source humanoid could dance the Rickroll on the beat."
 status: published
+preview: "previews/p3-forward-kinematics.mp4"
 order: 30
 course: "ROB 380 · Project 3"
 courseProject: 3

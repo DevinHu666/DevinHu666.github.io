@@ -36,6 +36,12 @@ One Markdown file in `src/content/projects/`. The schema is in `src/content.conf
 | `in-progress` | a card saying "write-up coming", no page |
 | `planned` | a dashed roadmap card, no page |
 
+The home page lists only `published` projects, featured first, one row each with a short looping
+preview. Set `preview` to a silent MP4 in `public/` with a `.jpg` poster of the same name beside
+it. `npm run assets:previews` (`scripts/render_previews.py`, needs Pillow and ffmpeg) renders
+800 × 500 clips for P1–P3 from the recordings already in `public/`. Add a function there for
+each new project.
+
 Set `courseProject` to list it on the AutoRob page. Set `demo` to embed an interactive block
 above the write-up (`p1-astar`, `p2-pendularm` and `p3-rickroll` exist; add new ones to the enum in
 `src/content.config.ts` and render them in `src/pages/projects/[slug].astro`).

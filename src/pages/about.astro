@@ -23,16 +23,16 @@ const { links } = site;
       how AI was used on that project.
     </p>
 
-    <h2>Contact</h2>
-    <ul>
-      {links.email && <li><a href={`mailto:${links.email}`}>{links.email}</a></li>}
-      {links.github && <li><a href={links.github}>GitHub</a></li>}
-      {links.linkedin && <li><a href={links.linkedin}>LinkedIn</a></li>}
-      {links.cv && <li><a href={url(links.cv)}>CV (PDF)</a></li>}
-      {!links.email && !links.github && !links.linkedin && !links.cv && (
-        <li class="muted">TODO: add links in <code>src/site.ts</code>.</li>
-      )}
-    </ul>
+    {(links.github || links.linkedin || links.cv) && (
+      <>
+        <h2>Links</h2>
+        <ul>
+          {links.github && <li><a href={links.github}>GitHub</a></li>}
+          {links.linkedin && <li><a href={links.linkedin}>LinkedIn</a></li>}
+          {links.cv && <li><a href={url(links.cv)}>CV (PDF)</a></li>}
+        </ul>
+      </>
+    )}
   </section>
 </Base>
 

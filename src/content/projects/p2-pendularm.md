@@ -2,6 +2,7 @@
 title: "Pendularm: simulating and controlling an arm"
 summary: "A planar two- or three-link arm simulated from its Lagrangian dynamics, with four numerical integrators, per-joint PID control and closed-form inverse kinematics, all running live behind the same TCP runtime. Standard library only: no physics engine, no ODE solver, no NumPy."
 status: published
+preview: "previews/p2-pendularm.mp4"
 order: 20
 course: "ROB 380 · Project 2"
 courseProject: 2

@@ -1,0 +1,148 @@
+---
+// One published project on the home page: a looping preview beside a short card.
+// Rows alternate sides on wide screens and stack on narrow ones.
+import type { CollectionEntry } from "astro:content";
+import { url } from "../lib/url";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const { title, summary, course, tags, preview } = project.data;
+const href = url(`projects/${project.id}/`);
+---
+
+<article class="row">
+  <a class="media" href={href} tabindex="-1" aria-hidden="true">
+    {preview ? (
+      <video
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster={url(preview.replace(/\.mp4$/, ".jpg"))}
+        data-src={url(preview)}
+      ></video>
+    ) : (
+      <div class="placeholder"></div>
+    )}
+  </a>
+  <div class="card">
+    {course && <p class="eyebrow">{course}</p>}
+    <h3><a href={href}>{title}</a></h3>
+    {tags.length > 0 && (
+      <ul class="tags">
+        {tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    )}
+    <p class="summary muted">{summary}</p>
+    <a class="more" href={href} tabindex="-1" aria-hidden="true">Open project →</a>
+  </div>
+</article>
+
+<script>
+  // Load and play each preview only while it is on screen; with reduced motion, show the poster.
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const videos = document.querySelectorAll<HTMLVideoElement>(".row video[data-src]");
+  if (!reducedMotion) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const { target, isIntersecting } of entries) {
+          const video = target as HTMLVideoElement;
+          if (isIntersecting) {
+            if (!video.src) video.src = video.dataset.src!;
+            video.play().catch(() => {});
+          } else video.pause();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    videos.forEach((video) => observer.observe(video));
+  }
+</script>
+
+<style>
+  .row {
+    position: relative;
+    display: grid;
+  }
+  .media {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--stage);
+    border: 1px solid var(--line);
+    aspect-ratio: 16 / 10;
+  }
+  video,
+  .placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card {
+    position: relative;
+    margin: -28px 12px 0;
+    padding: 18px 20px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .eyebrow {
+    margin: 0;
+  }
+  h3 {
+    margin: 0;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+  }
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .summary {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .more {
+    font-weight: 650;
+    font-size: 0.9rem;
+    color: var(--highlight);
+    text-decoration: none;
+  }
+
+  @media (min-width: 860px) {
+    .row {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: center;
+    }
+    .media {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .card {
+      grid-column: 2;
+      grid-row: 1;
+      margin: 0 0 0 -56px;
+      padding: 26px 28px 22px;
+    }
+    /* Every second row puts the preview on the right. */
+    .row:nth-of-type(even) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    }
+    .row:nth-of-type(even) .media {
+      grid-column: 2;
+    }
+    .row:nth-of-type(even) .card {
+      grid-column: 1;
+      margin: 0 -56px 0 0;
+    }
+  }
+</style>

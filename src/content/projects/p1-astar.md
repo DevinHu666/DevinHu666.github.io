@@ -2,6 +2,7 @@
 title: "Pathfinding: A* over my own pub/sub runtime"
 summary: "A ROS-like publish/subscribe and service runtime written from scratch, with an A* planner for occupancy grids on top. I built it in Python, then again in dependency-free Rust, and a one-line tie-break fix cut the work on large maps by about 500×."
 status: published
+preview: "previews/p1-astar.mp4"
 order: 10
 course: "ROB 380 · Project 1"
 courseProject: 1
